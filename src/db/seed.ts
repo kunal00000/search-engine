@@ -1,17 +1,22 @@
 import { faker } from '@faker-js/faker';
 import { neon } from '@neondatabase/serverless';
 import { Index } from '@upstash/vector';
-import * as dotenv from 'dotenv';
 import { drizzle } from 'drizzle-orm/neon-http';
 import { vectorize } from '../lib/vectorize';
 import { productsTable } from './schema';
+import {
+  UPSTASH_VECTOR_REST_URL,
+  UPSTASH_VECTOR_REST_TOKEN,
+  DATABASE_URL,
+} from '@/lib/config';
 
-dotenv.config();
-
-const index = new Index();
+const index = new Index({
+  url: UPSTASH_VECTOR_REST_URL,
+  token: UPSTASH_VECTOR_REST_TOKEN,
+});
 
 async function main() {
-  const connector = neon(process.env.DATABASE_URL!);
+  const connector = neon(DATABASE_URL);
   // @ts-expect-error neon-drizzle
   const db = drizzle(connector);
 
